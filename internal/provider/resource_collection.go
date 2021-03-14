@@ -42,6 +42,13 @@ func resourceCollection() *schema.Resource {
 	}
 }
 
+type Collection struct {
+	name        string
+	ts          int64
+	historyDays int64
+	ttlDays     int64
+}
+
 func resourceCollectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
@@ -52,29 +59,66 @@ func resourceCollectionCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return diag.FromErr(err)
 	}
 
-	type Collection struct {
-		name        string
-		ts          int64
-		historyDays int64
-		ttlDays     int64
-	}
-
 	var collection Collection
-	res.Get(&collection)
-	d.Set("ts", collection.ts)
-	d.Set("history_days", collection.historyDays)
-	d.Set("ttl_days", collection.ttlDays)
-
+	err = res.Get(&collection)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("name", collection.name)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("ts", collection.ts)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("history_days", collection.historyDays)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("ttl_days", collection.ttlDays)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
 
 	return diags
 }
 
 func resourceCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
+	var diags diag.Diagnostics
+	client := meta.(*f.FaunaClient)
+	name := d.Get("name").(string)
 
-	return diag.Errorf("not implemented")
+	res, err := client.Query(f.Get(f.Collection(name)))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	var collection Collection
+	err = res.Get(&collection)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("name", collection.name)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("ts", collection.ts)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("history_days", collection.historyDays)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("ttl_days", collection.ttlDays)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+
+	return diags
 }
 
 func resourceCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -85,8 +129,12 @@ func resourceCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta 
 }
 
 func resourceCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
-
-	return diag.Errorf("not implemented")
+	var diags diag.Diagnostics
+	client := meta.(*f.FaunaClient)
+	name := d.Get("name").(string)
+	_, err := client.Query(f.Delete(f.Collection(name)))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return diags
 }
