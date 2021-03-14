@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+
 	f "github.com/fauna/faunadb-go/v3/faunadb"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -26,7 +27,7 @@ func New(version string) func() *schema.Provider {
 			},
 			DataSourcesMap: map[string]*schema.Resource{},
 			ResourcesMap: map[string]*schema.Resource{
-				"collection_resource": resourceCollection(),
+				"fauna_collection": resourceCollection(),
 			},
 		}
 
