@@ -1,28 +1,24 @@
 ---
-page_title: "scaffolding_data_source Data Source - terraform-provider-scaffolding"
+page_title: "fauna_databases Data Source - terraform-provider-fauna"
 subcategory: ""
 description: |-
-  Retrieve all databases your secret has access to.
+  What databases do exist right now?
 ---
 
 # Data Source `fauna_databases`
 
+What databases do exist right now?
 
 
-## Example Usage
-
-```terraform
-data "fauna_databases" "my-dbs" {}
-```
 
 ## Schema
 
-### Required
-
-- **none** 
-
 ### Optional
 
-- **none** 
+- **id** (String) The ID of this resource.
+
+### Read-only
+
+- **databases** (List of String) Existing databases
 
 

@@ -1,11 +1,11 @@
 ---
-page_title: "scaffolding Provider"
+page_title: "fauna Provider"
 subcategory: ""
 description: |-
   
 ---
 
-# scaffolding Provider
+# fauna Provider
 
 
 
@@ -18,3 +18,7 @@ provider "scaffolding" {
 ```
 
 ## Schema
+
+### Required
+
+- **fauna_key** (String, Sensitive)
