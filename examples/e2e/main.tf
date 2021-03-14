@@ -2,7 +2,7 @@ terraform {
   required_providers {
     fauna = {
       source  = "chronark/fauna"
-      version = "0.0.13"
+      version = ">=0.0.15"
     }
   }
 }
@@ -12,6 +12,6 @@ provider "fauna" {
 }
 
 
-resource "fauna_collection" "terraform" {
-  name = "terraform"
+resource "fauna_collection" "terraform2" {
+  name = "terraform2"
 }

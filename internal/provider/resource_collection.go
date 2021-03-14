@@ -116,21 +116,27 @@ func resourceCollectionRead(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.SetId(collection.name)
 
 	return diags
 }
 
 func resourceCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// use the meta value to retrieve your client from the provider configure method
-	// client := meta.(*apiClient)
-
-	return diag.Errorf("not implemented")
+	var diags diag.Diagnostics
+	client := meta.(*f.FaunaClient)
+	oldName := d.Get("id").(string)
+	newName := d.Get("name").(string)
+	_, err := client.Query(f.Update(f.Collection(oldName), f.Obj{"name": newName}))
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return diags
 }
 
 func resourceCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
+
 	name := d.Get("name").(string)
 	_, err := client.Query(f.Delete(f.Collection(name)))
 	if err != nil {

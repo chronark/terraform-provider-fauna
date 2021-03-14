@@ -10,3 +10,9 @@ build:
 	go build -o terraform-provider-fauna
 	mkdir -p ~/.terraform.d/plugins/hashicorp.com/chronark/fauna/0.2/linux_amd64
 	mv terraform-provider-fauna ~/.terraform.d/plugins/hashicorp.com/chronark/fauna/0.2/linux_amd64
+
+
+fmt:
+	go generate -v ./...
+	golangci-lint run -v
+	
