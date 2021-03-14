@@ -5,14 +5,12 @@ import (
 	f "github.com/fauna/faunadb-go/v3/faunadb"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"strconv"
-	"time"
 )
 
 func resourceCollection() *schema.Resource {
 	return &schema.Resource{
 		// This description is used by the documentation generator and the language server.
-		Description: "Manipulate collections",
+		Description: "Manipulate collections, watch out when removing `ttl_days` or `history_days` from a terraform config. Currently they will not reset to the fauna defaults. You need to set them manually.",
 
 		CreateContext: resourceCollectionCreate,
 		ReadContext:   resourceCollectionRead,
@@ -29,14 +27,16 @@ func resourceCollection() *schema.Resource {
 				Computed: true,
 			},
 			"history_days": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Computed: true,
+				Description: "Will not reset to the fauna defaults when you delete it. Please manually set it to `30`",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
 			},
 			"ttl_days": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Computed: true,
+				Description: "Will not reset to the fauna defaults when you delete it. Please manually set it to `0`",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
 			},
 		},
 	}
@@ -50,11 +50,14 @@ type Collection struct {
 }
 
 func resourceCollectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
-	name := d.Get("name").(string)
 
-	res, err := client.Query(f.CreateCollection(f.Obj{"name": name}))
+	name := d.Get("name").(string)
+	res, err := client.Query(f.CreateCollection(f.Obj{
+		"name":         name,
+		"history_days": d.Get("history_days").(int),
+		"ttl_days":     d.Get("ttl_days").(int),
+	}))
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -80,27 +83,24 @@ func resourceCollectionCreate(ctx context.Context, d *schema.ResourceData, meta 
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+	d.SetId(name)
 
-	return diags
+	return resourceCollectionRead(ctx, d, meta)
+
 }
 
 func resourceCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
-	name := d.Get("name").(string)
+	id := d.Id()
 
-	res, err := client.Query(f.Get(f.Collection(name)))
+	res, err := client.Query(f.Get(f.Collection(id)))
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
 	var collection Collection
 	err = res.Get(&collection)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("name", collection.name)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -116,31 +116,47 @@ func resourceCollectionRead(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	d.SetId(collection.name)
 
 	return diags
 }
 
 func resourceCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
-	oldName := d.Get("id").(string)
-	newName := d.Get("name").(string)
-	_, err := client.Query(f.Update(f.Collection(oldName), f.Obj{"name": newName}))
-	if err != nil {
-		return diag.FromErr(err)
+	id := d.Id()
+
+	if d.HasChange("name") {
+		newName := d.Get("name").(string)
+		_, err := client.Query(f.Update(f.Collection(id), f.Obj{"name": newName}))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+		d.SetId(newName)
 	}
-	return diags
+	if d.HasChange("ttl_days") {
+		_, err := client.Query(f.Update(f.Collection(id), f.Obj{"ttl_days": d.Get("ttl_days").(int)}))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if d.HasChange("history_days") {
+		_, err := client.Query(f.Update(f.Collection(id), f.Obj{"history_days": d.Get("history_days").(int)}))
+		if err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	return resourceCollectionRead(ctx, d, meta)
 }
 
 func resourceCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := meta.(*f.FaunaClient)
 
-	name := d.Get("name").(string)
-	_, err := client.Query(f.Delete(f.Collection(name)))
+	id := d.Id()
+
+	_, err := client.Query(f.Delete(f.Collection(id)))
 	if err != nil {
 		return diag.FromErr(err)
 	}
+	d.SetId("")
 	return diags
 }

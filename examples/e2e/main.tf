@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     fauna = {
-      source  = "chronark/fauna"
-      version = ">=0.0.15"
+      source  = "hashicorp.com/chronark/fauna"
+      version = "9000.1"
     }
   }
 }
@@ -12,6 +12,6 @@ provider "fauna" {
 }
 
 
-resource "fauna_collection" "terraform2" {
-  name = "terraform2"
-}
+// resource "fauna_collection" "my_collection" {
+//   name         = "terraform15"
+// }
