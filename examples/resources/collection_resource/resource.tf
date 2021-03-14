@@ -1,3 +1,3 @@
-resource "fauna_collection" "users" {
+resource "collection_resource" "users" {
   name = "users"
 }
