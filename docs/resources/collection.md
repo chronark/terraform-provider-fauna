@@ -1,11 +1,11 @@
 ---
-page_title: "collection Resource - terraform-provider-fauna"
+page_title: "fauna_collection Resource - terraform-provider-fauna"
 subcategory: ""
 description: |-
   Manipulate collections
 ---
 
-# Resource `collection`
+# Resource `fauna_collection`
 
 Manipulate collections
 

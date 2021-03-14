@@ -2,7 +2,7 @@ terraform {
   required_providers {
     fauna = {
       source  = "chronark/fauna"
-      version = "0.0.8"
+      version = "0.0.10"
     }
   }
 }

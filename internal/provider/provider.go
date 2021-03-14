@@ -38,7 +38,7 @@ func New(version string) func() *schema.Provider {
 			},
 			DataSourcesMap: map[string]*schema.Resource{},
 			ResourcesMap: map[string]*schema.Resource{
-				"collection": resourceCollection(),
+				"fauna_collection": resourceCollection(),
 			},
 		}
 
