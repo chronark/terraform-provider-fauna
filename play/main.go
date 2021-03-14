@@ -9,20 +9,19 @@ type Database struct {
 	Ref f.RefV `fauna:"RefV"`
 }
 
+type Collection struct {
+	Name        string `fauna:"name"`
+	Ts          int64  `fauna:"ts"`
+	HistoryDays int64  `fauna:"history_days"`
+	TTLDays     int64  `fauna:"ttl_days"`
+}
+
 func main() {
-	client := f.NewFaunaClient("fnAEEL4dXVACBy4dTtIQpSfO5U4t6rccY2gLO7Da")
-	res, err := client.Query(f.Paginate(f.Databases()))
+	client := f.NewFaunaClient("fnAEESEtKbACB_YVroJX7uHMsJlzUUVXrQIkq0x8")
+	res, err := client.Query(f.CreateCollection(f.Obj{"name": "x"}))
 	if err != nil {
 		panic(err)
 	}
-	var refs []f.RefV
-	err = res.At(f.ObjKey("data")).Get(&refs)
-	if err != nil {
-		panic(err)
-	}
-	databases := make([]string, 0)
-	for _, db := range refs {
-		databases = append(databases, db.ID)
-	}
-	fmt.Println(databases)
+	fmt.Println(res)
+
 }

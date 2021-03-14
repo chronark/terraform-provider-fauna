@@ -32,16 +32,13 @@ func New(version string) func() *schema.Provider {
 				"fauna_key": {
 					Type:        schema.TypeString,
 					Required:    true,
-					Sensitive: true,
+					Sensitive:   true,
 					DefaultFunc: schema.EnvDefaultFunc("FAUNA_KEY", nil),
 				},
 			},
-			DataSourcesMap: map[string]*schema.Resource{
-				"scaffolding_data_source": dataSourceScaffolding(),
-				"fauna_databases":         dataSourceDatabases(),
-			},
+			DataSourcesMap: map[string]*schema.Resource{},
 			ResourcesMap: map[string]*schema.Resource{
-				"scaffolding_resource": resourceScaffolding(),
+				"collection": resourceCollection(),
 			},
 		}
 

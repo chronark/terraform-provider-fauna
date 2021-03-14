@@ -30,7 +30,6 @@ func dataSourceDatabases() *schema.Resource {
 	}
 }
 
-
 func dataSourceDatabasesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
