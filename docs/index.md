@@ -12,8 +12,8 @@ description: |-
 ## Example Usage
 
 ```terraform
-provider "scaffolding" {
-  # example configuration here
+provider "fauna" {
+  fauna_key = "my-admin-key"
 }
 ```
 
