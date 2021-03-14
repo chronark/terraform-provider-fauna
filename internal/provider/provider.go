@@ -2,6 +2,8 @@ package provider
 
 import (
 	"context"
+	"fmt"
+	f "github.com/fauna/faunadb-go/v3/faunadb"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -26,8 +28,17 @@ func init() {
 func New(version string) func() *schema.Provider {
 	return func() *schema.Provider {
 		p := &schema.Provider{
+			Schema: map[string]*schema.Schema{
+				"fauna_key": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive: true,
+					DefaultFunc: schema.EnvDefaultFunc("FAUNA_KEY", nil),
+				},
+			},
 			DataSourcesMap: map[string]*schema.Resource{
 				"scaffolding_data_source": dataSourceScaffolding(),
+				"fauna_databases":         dataSourceDatabases(),
 			},
 			ResourcesMap: map[string]*schema.Resource{
 				"scaffolding_resource": resourceScaffolding(),
@@ -39,19 +50,17 @@ func New(version string) func() *schema.Provider {
 		return p
 	}
 }
-
-type apiClient struct {
-	// Add whatever fields, client or connection info, etc. here
-	// you would need to setup to communicate with the upstream
-	// API.
-}
-
 func configure(version string, p *schema.Provider) func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	return func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
-		// Setup a User-Agent for your API client (replace the provider name for yours):
-		// userAgent := p.UserAgent("terraform-provider-scaffolding", version)
-		// TODO: myClient.UserAgent = userAgent
+	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+		var diags diag.Diagnostics
 
-		return &apiClient{}, nil
+		faunaKey := d.Get("fauna_key").(string)
+
+		if faunaKey == "" {
+			return nil, diag.FromErr(fmt.Errorf("fauna key is not set"))
+		}
+
+		client := f.NewFaunaClient(faunaKey)
+		return client, diags
 	}
 }

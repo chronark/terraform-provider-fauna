@@ -84,6 +84,11 @@ github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1m
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
 github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
+github.com/fauna/faunadb-go v1.0.0 h1:WeveMTvi99E3RkJHNuMeJ1zD4Z0bXb3NT6/854HV6XU=
+github.com/fauna/faunadb-go v2.0.0+incompatible h1:b+iaebxQ37qQtQCEYpfatxeZVF+L0HTBTTrCMcV8itI=
+github.com/fauna/faunadb-go v2.0.0+incompatible/go.mod h1:WYAh1hNDFEgbsKKeUhsHPGIFkpQ1CGn/5XejAFfOhHg=
+github.com/fauna/faunadb-go/v3 v3.0.0 h1:jb7I54xQMdpweUCVIDaDqeNN0V1cL6DxyIjlNFjYlho=
+github.com/fauna/faunadb-go/v3 v3.0.0/go.mod h1:uvmCKyBMvdHFO7gigqjt0lZNuMcmutvx9d2pJZBMFZY=
 github.com/flynn/go-shlex v0.0.0-20150515145356-3f9db97f8568 h1:BHsljHzVlRcyQhjrss6TZTdY2VfCqZPbv5k3iBFa2ZQ=
 github.com/flynn/go-shlex v0.0.0-20150515145356-3f9db97f8568/go.mod h1:xEzjJPgXI435gkrCt3MPfRiAkVrwSbHsst4LCFVfpJc=
 github.com/gliderlabs/ssh v0.2.2 h1:6zsha5zo/TWhRhwqCD3+EarCAgZ2yN28ipRnGPnwkI0=
