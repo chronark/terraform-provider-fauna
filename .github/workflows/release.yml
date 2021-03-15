@@ -1,21 +1,10 @@
-# This GitHub action can publish assets for release when a tag is created.
-# Currently its setup to run on any tag that matches the pattern "v*" (ie. v0.1.0).
-#
-# This uses an action (paultyng/ghaction-import-gpg) that assumes you set your 
-# private key in the `GPG_PRIVATE_KEY` secret and passphrase in the `PASSPHRASE`
-# secret. If you would rather own your own GPG handling, please fork this action
-# or use an alternative one for key handling.
-#
-# You will need to pass the `--batch` flag to `gpg` in your signing step 
-# in `goreleaser` to indicate this is being used in a non-interactive mode.
-#
 name: release
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 jobs:
-  release:
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
       -
@@ -29,18 +18,12 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.14
-      - 
-        name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v5.3
-        with:
-          release_branches: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Import GPG key
         id: import_gpg
         uses: paultyng/ghaction-import-gpg@v2.1.0
         env:
+          # These secrets will need to be configured for the repository:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
       -
