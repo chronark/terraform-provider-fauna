@@ -28,5 +28,5 @@ apply:
 
 
 release:
-	git tag $(svu next)
+	git tag $$(svu next)
 	git push --tags
