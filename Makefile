@@ -25,3 +25,8 @@ init: build
 	terraform -chdir=examples/e2e init -upgrade
 apply: 
 	terraform -chdir=examples/e2e apply
+
+
+release:
+	git tag $(svu next)
+	git push --tags
