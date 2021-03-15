@@ -31,23 +31,20 @@ If you update the unique field, existing duplicate items are not removed from th
 				Type:        schema.TypeSet,
 				Required:    true,
 				Elem: &schema.Schema{
-					Description: "Index name",
-					Type:        schema.TypeString,
-					Required:    true,
+					Type: schema.TypeString,
 				},
 			},
 			"terms": {
 				Description: "An array of Term objects describing the fields that should be searchable. Indexed terms can be used to search for field values, via the `Match` function. The default is an empty Array.",
 				Optional:    true,
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"field": {
 							Type:     schema.TypeList,
 							Optional: true,
 							Elem: &schema.Schema{
-								Type:     schema.TypeString,
-								Required: true,
+								Type: schema.TypeString,
 							},
 						},
 					},
@@ -64,8 +61,7 @@ If you update the unique field, existing duplicate items are not removed from th
 							Required:    true,
 							Type:        schema.TypeList,
 							Elem: &schema.Schema{
-								Type:     schema.TypeString,
-								Required: true,
+								Type: schema.TypeString,
 							},
 						},
 						"reverse": {
@@ -97,7 +93,7 @@ If you update the unique field, existing duplicate items are not removed from th
 			},
 			"active": {
 				Description: "When an index is added, it is immediately available for reads, but returns incomplete results until it is built. Fauna builds the index asynchronously by scanning over relevant documents. Upon completion, the index’s `active` field is set to `true`.",
-				Type:        schema.TypeInt,
+				Type:        schema.TypeBool,
 				Computed:    true,
 			},
 			"partitions": {

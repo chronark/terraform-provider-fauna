@@ -8,10 +8,10 @@ terraform {
 }
 
 provider "fauna" {
-  fauna_key = "fnAEESzh3JACBY9ci4SwvxZYy89fP1fFbAU3HtGI"
+  fauna_key = "fnAEEWZgLrACB6LzAzbAotOEPVrqCQKX1-rbedfw"
 }
 
 
-// resource "fauna_collection" "my_collection" {
-//   name         = "terraform15"
-// }
+resource "fauna_collection" "my_collection" {
+  name = "terraform15"
+}

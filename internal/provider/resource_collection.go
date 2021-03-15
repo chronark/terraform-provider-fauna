@@ -38,6 +38,11 @@ func resourceCollection() *schema.Resource {
 				Optional:    true,
 				Computed:    true,
 			},
+			"id": {
+				Description: "The id of this resource.",
+				Type:        schema.TypeString,
+				Computed:    true,
+			},
 		},
 	}
 }

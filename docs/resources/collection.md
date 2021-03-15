@@ -12,8 +12,16 @@ Manipulate collections, watch out when removing `ttl_days` or `history_days` fro
 ## Example Usage
 
 ```terraform
-resource "fauna_collection" "users" {
+resource "fauna_collection" "minimal" {
   name = "users"
+}
+
+
+resource "fauna_collection" "full_configuration" {
+  name         = "users"
+  ttl_days     = 90
+  history_days = 30
+
 }
 ```
 
@@ -26,11 +34,11 @@ resource "fauna_collection" "users" {
 ### Optional
 
 - **history_days** (Number) Will not reset to the fauna defaults when you delete it. Please manually set it to `30`
-- **id** (String) The ID of this resource.
 - **ttl_days** (Number) Will not reset to the fauna defaults when you delete it. Please manually set it to `0`
 
 ### Read-only
 
+- **id** (String) The id of this resource.
 - **ts** (Number)
 
 
