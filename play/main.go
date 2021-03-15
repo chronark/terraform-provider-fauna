@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	f "github.com/fauna/faunadb-go/v3/faunadb"
 )
 
@@ -11,6 +11,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(res)
+	log.Println(res)
 
 }
