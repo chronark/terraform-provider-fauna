@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	client := f.NewFaunaClient("fnAEESEtKbACB_YVroJX7uHMsJlzUUVXrQIkq0x8")
+	client := f.NewFaunaClient("")
 	res, err := client.Query(f.CreateCollection(f.Obj{"name": "x"}))
 	if err != nil {
 		panic(err)
