@@ -1,8 +1,8 @@
 package main
 
 import (
-	"log"
 	f "github.com/fauna/faunadb-go/v3/faunadb"
+	"log"
 )
 
 func main() {
