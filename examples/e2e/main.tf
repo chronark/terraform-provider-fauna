@@ -17,5 +17,4 @@ provider "fauna" {
 // }
 
 
-data "fauna_keys" "all_keys" {}
 

@@ -30,6 +30,7 @@ func New(version string) func() *schema.Provider {
 			},
 			ResourcesMap: map[string]*schema.Resource{
 				"fauna_collection": resourceCollection(),
+				"fauna_database":   resourceDatabase(),
 				"fauna_index":      resourceIndex(),
 			},
 		}
