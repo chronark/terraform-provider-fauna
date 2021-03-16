@@ -12,9 +12,14 @@ provider "fauna" {
 }
 
 
-// resource "fauna_collection" "my_collection" {
-//   name = "terraform"
-// }
 
 
+resource "fauna_collection" "my_collection" {
+  name = "terraform"
+}
+
+resource "fauna_index" "my_index" {
+  sources = [fauna_collection.my_collection.name]
+  name    = "my_index"
+}
 

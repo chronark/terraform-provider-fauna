@@ -14,12 +14,10 @@ func resourceIndex() *schema.Resource {
 It is possible to rename an index by updating its name field. Renaming an index changes its Reference, but preserves inbound References to the index. Index data is not rebuilt.
 An index’s terms and values fields may not be changed. If you require such a change, the existing index must be deleted and a new one created using the new definitions for terms and/or values.
 If you update the unique field, existing duplicate items are not removed from the index.`,
-
 		CreateContext: resourceIndexCreate,
 		ReadContext:   resourceIndexRead,
 		UpdateContext: resourceIndexUpdate,
 		DeleteContext: resourceIndexDelete,
-
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Description: "The logical name of the index. Cannot be `events`, `sets`, `self`, `documents`, or `_`.",
@@ -30,6 +28,7 @@ If you update the unique field, existing duplicate items are not removed from th
 				Description: "An array of one or more collection names",
 				Type:        schema.TypeList,
 				Required:    true,
+				MinItems:    1,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
@@ -37,6 +36,7 @@ If you update the unique field, existing duplicate items are not removed from th
 			"terms": {
 				Description: "An array of Term objects describing the fields that should be searchable. Indexed terms can be used to search for field values, via the `Match` function. The default is an empty Array.",
 				Optional:    true,
+				ForceNew:    true,
 				Type:        schema.TypeList,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -53,6 +53,7 @@ If you update the unique field, existing duplicate items are not removed from th
 			"values": {
 				Description: "An array of Value objects describing the fields that should be reported in search results. The default is an empty Array. When no `values` fields are defined, search results report the indexed document’s Reference.",
 				Optional:    true,
+				ForceNew:    true,
 				Type:        schema.TypeList,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
