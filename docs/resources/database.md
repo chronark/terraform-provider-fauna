@@ -9,7 +9,13 @@ description: |-
 
 Create, Read, Update or Delete databases
 
+## Example Usage
 
+```terraform
+resource "fauna_database" "my_database" {
+  name = "vercel"
+}
+```
 
 ## Schema
 
