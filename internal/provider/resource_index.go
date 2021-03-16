@@ -26,9 +26,9 @@ If you update the unique field, existing duplicate items are not removed from th
 				Type:        schema.TypeString,
 				Required:    true,
 			},
-			"source": {
+			"sources": {
 				Description: "An array of one or more collection names",
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Required:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -105,47 +105,48 @@ If you update the unique field, existing duplicate items are not removed from th
 	}
 }
 
-type Index struct {
-	name        string
-	ts          int64
-	historyDays int64
-	ttlDays     int64
+func buildSources(sourceNames []interface{}) f.Arr {
+	var arr f.Arr
+	for i := 0; i < len(sourceNames); i++ {
+		arr = append(arr, f.Collection(sourceNames[i]))
+	}
+	return arr
+}
+
+func buildTerms(terms []interface{}) f.Arr {
+	var arr f.Arr
+
+	for i := 0; i < len(terms); i++ {
+		arr = append(arr, f.Obj{
+			"field": terms[i].(map[string]interface{})["field"].([]string),
+		})
+	}
+	return arr
 }
 
 func resourceIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*f.FaunaClient)
 
 	name := d.Get("name").(string)
-	res, err := client.Query(f.CreateIndex(f.Obj{
-		"name":         name,
-		"history_days": d.Get("history_days").(int),
-		"ttl_days":     d.Get("ttl_days").(int),
+	unique := d.Get("unique").(bool)
+	serialized := d.Get("serialized").(bool)
+	sourceNames := d.Get("sources").([]interface{})
+	terms := d.Get("terms").([]interface{})
+
+	_, err := client.Query(f.CreateIndex(f.Obj{
+		"unique":     unique,
+		"serialized": serialized,
+		"name":       name,
+		"source":     buildSources(sourceNames),
+		"terms":      buildTerms(terms),
+		// "values": f.Arr{f.Obj{
+		// 	"field": f.Arr{"data", "elements"},
+		// }},
 	}))
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	var collection Index
-	err = res.Get(&collection)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("name", collection.name)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("ts", collection.ts)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("history_days", collection.historyDays)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("ttl_days", collection.ttlDays)
-	if err != nil {
-		return diag.FromErr(err)
-	}
 	d.SetId(name)
 
 	return resourceIndexRead(ctx, d, meta)
@@ -162,24 +163,83 @@ func resourceIndexRead(ctx context.Context, d *schema.ResourceData, meta interfa
 		return diag.FromErr(err)
 	}
 
-	var collection Index
-	err = res.Get(&collection)
+	var (
+		name       string
+		ts         int64
+		unique     bool
+		serialized bool
+		active     bool
+	)
+	// name
+	err = res.At(f.ObjKey("name")).Get(&name)
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	err = d.Set("ts", collection.ts)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("history_days", collection.historyDays)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	err = d.Set("ttl_days", collection.ttlDays)
+	err = d.Set("name", name)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
+	// ts
+	err = res.At(f.ObjKey("ts")).Get(&ts)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("ts", ts)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	// unique
+	err = res.At(f.ObjKey("unique")).Get(&unique)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("unique", unique)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	// serialized
+	err = res.At(f.ObjKey("serialized")).Get(&serialized)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("serialized", serialized)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	// active
+	err = res.At(f.ObjKey("active")).Get(&active)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("active", active)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	//terms
+	type Term struct {
+		Field []string `fauna:"field"`
+	}
+	var terms []Term
+	err = res.At(f.ObjKey("terms")).Get(&terms)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("terms", terms)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	//sources
+	var sources []string
+	err = res.At(f.ObjKey("sources")).Get(&sources)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	err = d.Set("sources", sources)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	return diags
 }
 

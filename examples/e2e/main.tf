@@ -12,6 +12,10 @@ provider "fauna" {
 }
 
 
-resource "fauna_collection" "my_collection" {
-  name = "terraform15"
-}
+// resource "fauna_collection" "my_collection" {
+//   name = "terraform"
+// }
+
+
+data "fauna_keys" "all_keys" {}
+

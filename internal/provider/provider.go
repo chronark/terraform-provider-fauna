@@ -25,7 +25,9 @@ func New(version string) func() *schema.Provider {
 					DefaultFunc: schema.EnvDefaultFunc("FAUNA_KEY", nil),
 				},
 			},
-			DataSourcesMap: map[string]*schema.Resource{},
+			DataSourcesMap: map[string]*schema.Resource{
+				"fauna_keys": dataSourceKeys(),
+			},
 			ResourcesMap: map[string]*schema.Resource{
 				"fauna_collection": resourceCollection(),
 				"fauna_index":      resourceIndex(),

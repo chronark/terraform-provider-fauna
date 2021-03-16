@@ -18,10 +18,12 @@ fmt:
 	go fmt ./...
 
 
+rm-state:
+	rm -rf examples/e2e/terraform.tfstate*
+
 
 init: build
 	rm -rf examples/e2e/.terraform*
-	rm -rf examples/e2e/terraform.tfstate*
 	terraform -chdir=examples/e2e init -upgrade
 apply: 
 	terraform -chdir=examples/e2e apply

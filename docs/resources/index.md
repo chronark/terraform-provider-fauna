@@ -26,7 +26,7 @@ resource "fauna_index" "minimal" {
 ### Required
 
 - **name** (String) The logical name of the index. Cannot be `events`, `sets`, `self`, `documents`, or `_`.
-- **source** (Set of String) An array of one or more collection names
+- **sources** (List of String) An array of one or more collection names
 
 ### Optional
 

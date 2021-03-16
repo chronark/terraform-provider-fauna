@@ -1,31 +1,25 @@
 package provider
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccResourceCollection(t *testing.T) {
+func TestAccDataSourceScaffolding(t *testing.T) {
 
 	resource.UnitTest(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: providerFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccResourceCollection,
+				Config: testAccDataSourceScaffolding,
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestMatchResourceAttr(
-						"fauna_collection.foo", "name", regexp.MustCompile("^ba")),
+					resource.TestCheckOutput("data.fauna_keys.foo", ""),
 				),
 			},
 		},
 	})
 }
 
-const testAccResourceCollection = `
-resource "fauna_collection" "foo" {
-  name = "bar"
-}
-`
+const testAccDataSourceScaffolding = `data "fauna_keys" "foo" {}`
