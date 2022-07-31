@@ -1,6 +1,6 @@
 module github.com/chronark/terraform-provider-fauna
 
-go 1.15
+go 1.17
 
 require (
 	github.com/fauna/faunadb-go/v3 v3.0.0
